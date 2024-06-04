@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { google } from 'googleapis';
 import nodemailer from 'nodemailer';
+
 export const generateJwt = async (id, emailAddress) => {
   const payload = {
     id,
@@ -8,7 +9,10 @@ export const generateJwt = async (id, emailAddress) => {
   };
   jwt.sign(payload, process.env.SECRET);
 };
-export async function sendEmail(email) {
+
+export async function sendEmail(email, jwt) {
+  jwt = "Bearer " + jwt
+  console.log(jwt)
   const OAuth2 = google.auth.OAuth2;
   const Oauth_client = new OAuth2(
     process.env.CLIENT_ID,
@@ -37,7 +41,7 @@ export async function sendEmail(email) {
     subject: 'Hello',
     text: 'Hello World',
     // eslint-disable-next-line max-len
-    html: '<a href=http://localhost:3000/api/bookstore_user//verification/:token">Click here to register </a>'
+    html: `<a href=http://localhost:3000/api/bookstore_user/verification/${jwt}">Click here to register </a>`
   };
   transporter.sendMail(msg, (err, result) => {
     console.log(result);

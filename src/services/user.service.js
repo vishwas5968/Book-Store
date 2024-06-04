@@ -1,7 +1,7 @@
 import User from '../models/user.model';
 import bcrypt from 'bcrypt';
 import logger from '../config/logger.js';
-import { sendEmail } from '../utils/user.util.js';
+import { generateJwt, sendEmail } from '../utils/user.util.js';
 
 export const getUserByEmail = async (email) => {
   return User.find({ email: email });
@@ -12,8 +12,9 @@ export const registerUser = async (body) => {
   if (user.length === 0) {
     body.email = body.email.toLowerCase();
     body.password = await bcrypt.hash(body.password, 10);
-    await User.create(body);
-    await sendEmail(body.email);
+    const user = await User.create(body);
+    const jwt = generateJwt(user._id,user.email)
+    await sendEmail(body.email, jwt);
   } else {
     throw {
       message: 'User with this email is already registered'

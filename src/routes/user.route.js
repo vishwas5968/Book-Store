@@ -10,10 +10,7 @@ const router = express.Router();
 router.post('/admin/registration', newUserValidator, UserController.registerAdmin);
 router.post('/admin/login', loginValidator, UserController.login);
 
-/* Admin - Product */
-router.post('/admin/add/book');
-router.put('/admin/update/book/:productId');
-router.delete('/admin/delete/book/:productId');
+
 
 /* Admin-Order */
 router.get('/admin/get/order');

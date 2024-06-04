@@ -1,10 +1,10 @@
 import HttpStatus from 'http-status-codes';
 import * as UserService from '../services/user.service';
 
-export const registerUser = async (req, res, next) => {
+export const registerUser = async (req, res) => {
   try {
-    req.body.userRole = 'user';
-    await UserService.registerUser(req.body);
+    req.body.userRole = 'USER';
+    await UserService.registerUser(req.body, res);
     res.status(HttpStatus.CREATED).json({
       code: HttpStatus.CREATED,
       success: true,
@@ -12,21 +12,24 @@ export const registerUser = async (req, res, next) => {
         'Please verify yourself by using the OTP and URL sent to your Email-Id'
     });
   } catch (error) {
-    next(error);
+    res.status(HttpStatus.BAD_REQUEST).json({
+      success: false,
+      message: `Error: ${error}`
+    });
   }
 };
 
 export const registerAdmin = async (req, res) => {
   try {
-    req.body.userRole = 'admin';
-    await UserService.registerUser(req.body);
+    req.body.userRole = 'ADMIN';
+    await UserService.registerUser(req.body, res);
     res.status(HttpStatus.CREATED).json({
       code: HttpStatus.CREATED,
       success: true,
       message: 'User created successfully'
     });
   } catch (error) {
-    res.status(HttpStatus.CREATED).json({
+    res.status(HttpStatus.BAD_REQUEST).json({
       success: false,
       message: `Error: ${error}`
     });
