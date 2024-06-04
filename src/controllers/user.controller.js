@@ -7,16 +7,20 @@ import * as UserService from '../services/user.service';
  * @param {object} res - response object
  * @param {Function} next
  */
-export const getAllUsers = async (req, res, next) => {
+export const registerAdmin = async (req, res) => {
   try {
-    const data = await UserService.getAllUsers();
-    res.status(HttpStatus.OK).json({
-      code: HttpStatus.OK,
-      data: data,
-      message: 'All users fetched successfully'
+    req.body.userRole = 'admin';
+    await UserService.registerUser(req.body);
+    res.status(HttpStatus.CREATED).json({
+      code: HttpStatus.CREATED,
+      success: true,
+      message: 'User created successfully'
     });
   } catch (error) {
-    next(error);
+    res.status(HttpStatus.CREATED).json({
+      success: false,
+      message: `Error: ${error}`
+    });
   }
 };
 

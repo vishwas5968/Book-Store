@@ -6,10 +6,18 @@ export const getAllUsers = async () => {
   return data;
 };
 
-//create new user
-export const newUser = async (body) => {
-  const data = await User.create(body);
-  return data;
+export const registerUser = async (body) => {
+  let user = await getUserByEmail(body.email.toLowerCase());
+  if (user.length === 0) {
+    body.email = body.email.toLowerCase();
+    body.password = await bcrypt.hash(body.password, 10);
+    await User.create(body);
+    await sendEmail(body.email);
+  } else {
+    throw {
+      message: 'User with this email is already registered'
+    };
+  }
 };
 
 //update single user

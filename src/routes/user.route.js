@@ -5,19 +5,36 @@ import { userAuth } from '../middlewares/auth.middleware';
 
 const router = express.Router();
 
-//route to get all users
-router.get('', userController.getAllUsers);
+/* Admin */
+router.post('/admin/registration', newUserValidator, UserController.registerAdmin);
+router.post('/admin/login', loginValidator, UserController.login);
 
-//route to create a new user
-router.post('', newUserValidator, userController.newUser);
+/* Admin - Product */
+router.post('/admin/add/book');
+router.put('/admin/update/book/:productId');
+router.delete('/admin/delete/book/:productId');
 
-//route to get a single user by their user id
-router.get('/:_id', userAuth, userController.getUser);
+/* Admin-Order */
+router.get('/admin/get/order');
 
-//route to update a single user by their user id
-router.put('/:_id', userController.updateUser);
+/* User */
+router.post('/registration', newUserValidator, UserController.registerUser);
+router.post('/verification/:token', userAuth);
+router.post('/login', loginValidator, UserController.login);
 
-//route to delete a single user by their user id
-router.delete('/:_id', userController.deleteUser);
+/* Product */
+router.post('/add_wish_list/:productId');
+router.delete('/remove_wishlist_item/:productId');
+router.get('/get_wishlist_items');
+
+/* Customer Details */
+router.put('/edit_user');
+
+/* Order */
+router.post('/add/order');
+
+/* Feedback */
+router.post('/add/feedback/:productId');
+router.post('/get/feedback/:productId');
 
 export default router;
