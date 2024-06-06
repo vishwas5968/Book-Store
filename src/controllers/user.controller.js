@@ -1,9 +1,26 @@
 import HttpStatus from 'http-status-codes';
 import * as UserService from '../services/user.service';
 
-export const registerUser = async (req, res, next) => {
+export const registerUser = async (req, res) => {
   try {
-    req.body.userRole = 'user';
+    console.log('req.body', req.body);
+    await UserService.registerUser(req.body);
+    res.status(HttpStatus.CREATED).json({
+      success: true,
+      message:
+        'Please verify yourself by using the OTP and URL sent to your Email-Id'
+    });
+  } catch (error) {
+    res.status(HttpStatus.BAD_REQUEST).json({
+      success: false,
+      message: `Error: ${error}`
+    });
+  }
+};
+
+export const registerAdmin = async (req, res) => {
+  try {
+    console.log('req.body', req.body);
     await UserService.registerUser(req.body);
     res.status(HttpStatus.CREATED).json({
       code: HttpStatus.CREATED,
@@ -12,21 +29,23 @@ export const registerUser = async (req, res, next) => {
         'Please verify yourself by using the OTP and URL sent to your Email-Id'
     });
   } catch (error) {
-    next(error);
+    res.status(HttpStatus.BAD_REQUEST).json({
+      success: false,
+      message: `Error: ${error}`
+    });
   }
 };
 
-export const registerAdmin = async (req, res) => {
+export const verifyUser = async (req, res) => {
   try {
-    req.body.userRole = 'admin';
-    await UserService.registerUser(req.body);
+    await UserService.verifyUser(res.locals.user.email);
     res.status(HttpStatus.CREATED).json({
       code: HttpStatus.CREATED,
       success: true,
       message: 'User created successfully'
     });
   } catch (error) {
-    res.status(HttpStatus.CREATED).json({
+    res.status(HttpStatus.BAD_REQUEST).json({
       success: false,
       message: `Error: ${error}`
     });
@@ -35,13 +54,18 @@ export const registerAdmin = async (req, res) => {
 
 export const login = async (req, res, next) => {
   try {
+    console.log(req.body, 'req.body');
     const data = await UserService.login(req.body);
     res.status(HttpStatus.ACCEPTED).json({
       code: HttpStatus.ACCEPTED,
       data: data,
-      message: 'User updated successfully'
+      message: 'User successfully logged in'
     });
   } catch (error) {
+    res.status(HttpStatus.BAD_REQUEST).json({
+      success: false,
+      message: `Error: ${error}`
+    });
     next(error);
   }
 };
@@ -55,6 +79,10 @@ export const deleteUser = async (req, res, next) => {
       message: 'User deleted successfully'
     });
   } catch (error) {
+    res.status(HttpStatus.BAD_REQUEST).json({
+      success: false,
+      message: `Error: ${error}`
+    });
     next(error);
   }
 };

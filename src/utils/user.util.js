@@ -1,14 +1,16 @@
 import jwt from 'jsonwebtoken';
 import { google } from 'googleapis';
 import nodemailer from 'nodemailer';
-export const generateJwt = async (id, emailAddress) => {
+
+export const generateJwt = async (email, userRole) => {
   const payload = {
-    id,
-    emailAddress
+    email,
+    userRole
   };
-  jwt.sign(payload, process.env.SECRET);
+  return 'Bearer ' + (await jwt.sign(payload, process.env.SECRET));
 };
-export async function sendEmail(email) {
+
+export async function sendEmail(email, jwt) {
   const OAuth2 = google.auth.OAuth2;
   const Oauth_client = new OAuth2(
     process.env.CLIENT_ID,
@@ -32,15 +34,23 @@ export async function sendEmail(email) {
     debug: true
   });
   let msg = {
-    from: 'v14052000@gmail.com',
+    from: process.env.EMAIL,
     to: `${email}`,
-    subject: 'Hello',
-    text: 'Hello World',
-    // eslint-disable-next-line max-len
-    html: '<a href=http://localhost:3000/api/bookstore_user//verification/:token">Click here to register </a>'
+    subject: 'User Verification',
+    text: `Please click on the link below within 5 minutes to complete your verification http://localhost:3000/api/bookstore_user/verification/${jwt}`
   };
   transporter.sendMail(msg, (err, result) => {
     console.log(result);
     if (err) throw new Error(err);
   });
 }
+
+export const setUserRole = (req, res, next) => {
+  req.body.userRole = 'USER';
+  next();
+};
+
+export const setAdminRole = (req, res, next) => {
+  req.body.userRole = 'ADMIN';
+  next();
+};
