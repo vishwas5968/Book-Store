@@ -2,37 +2,20 @@
 import express from 'express';
 import * as UserController from '../controllers/user.controller';
 import { loginValidator, newUserValidator } from '../validators/user.validator';
-import { userAuth } from '../middlewares/auth.middleware';
+import { loginAuth, userAuth } from '../middlewares/auth.middleware';
+import { setAdminRole, setUserRole } from '../utils/user.util.js';
 
 const router = express.Router();
 
-/* Admin */
-router.post('/admin/registration', newUserValidator, UserController.registerAdmin);
-router.post('/admin/login', loginValidator, UserController.login);
-
-
-
-/* Admin-Order */
-router.get('/admin/get/order');
-
 /* User */
-router.post('/registration', newUserValidator, UserController.registerUser);
-router.post('/verification/:token', userAuth);
-router.post('/login', loginValidator, UserController.login);
+router.post('/', newUserValidator, setUserRole, UserController.registerUser);
 
-/* Product */
-router.post('/add_wish_list/:productId');
-router.delete('/remove_wishlist_item/:productId');
-router.get('/get_wishlist_items');
+/* Admin */
+router.post('/admin', newUserValidator, setAdminRole, UserController.registerUser);
 
-/* Customer Details */
-router.put('/edit_user');
+/* User,Admin - Verification, Login */
+router.post('/verification', userAuth, UserController.verifyUser);
+router.post('/login', loginValidator, loginAuth, UserController.login);
 
-/* Order */
-router.post('/add/order');
-
-/* Feedback */
-router.post('/add/feedback/:productId');
-router.post('/get/feedback/:productId');
 
 export default router;

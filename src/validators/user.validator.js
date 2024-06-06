@@ -8,11 +8,10 @@ export const newUserValidator = (req, res, next) => {
       .min(8)
       .required()
       .pattern(
-        new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,}$")
+        new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,}$')
       )
-      .message(""),
-    phone: Joi.string()
-      .required()
+      .message(''),
+    phone: Joi.string().required()
   });
   const { error, value } = schema.validate(req.body);
   if (error) {
