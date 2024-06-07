@@ -5,13 +5,14 @@ import * as BookController from '../controllers/book.controller.js';
 
 const router = express.Router();
 
+/* User, Admin - Product */
+router.get('/', userAuth, BookController.getAllBooks)
+router.get('/:productId', userAuth, BookController.getBookById);
+
 /* Admin - Product */
-router.delete('/admin/:productId', BookController.getBookById);
 router.post('/admin', userAuth, bookValidation, BookController.addBook);
 router.put('/admin/:productId', userAuth, BookController.updateBookDetailsById);
+router.delete('/admin/:productId', BookController.getBookById);
 router.delete('/admin/:productId', userAuth, BookController.deleteBookById);
-
-/* User - Product */
-router.get('/user/:productId', userAuth, BookController.getBookById);
 
 export default router;
