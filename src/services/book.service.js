@@ -1,9 +1,9 @@
 import Book from '../models/book.model.js';
 
-export const addBook = (req, res) => {
-  const book = Book.find({ bookName: req.body.bookName });
+export const addBook = async (req, res) => {
+  const book = await Book.find({ bookName: req.body.bookName });
   if (book.length === 0) {
-    return Book.create(req.locals.user);
+    return await Book.create(req.body);
   } else {
     throw {
       message: 'Book with this name is already added'
@@ -34,7 +34,7 @@ export const getBookById = async (id) => {
 };
 
 export const updateBookDetailsById = (id, body) => {
-  const book = Book.findByIdAndUpdate({ _id: id }, body);
+  const book = Book.findByIdAndUpdate(id, body);
   if (book) {
     return book;
   } else {

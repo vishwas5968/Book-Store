@@ -2,7 +2,7 @@
 import express from 'express';
 import * as UserController from '../controllers/user.controller';
 import { loginValidator, newUserValidator } from '../validators/user.validator';
-import { loginAuth, userAuth } from '../middlewares/auth.middleware';
+import { userAuth } from '../middlewares/auth.middleware';
 import { setAdminRole, setUserRole } from '../utils/user.util.js';
 
 const router = express.Router();
@@ -16,6 +16,5 @@ router.post('/admin', newUserValidator, setAdminRole, UserController.registerUse
 /* User,Admin - Verification, Login */
 router.post('/verification', userAuth, UserController.verifyUser);
 router.post('/login', loginValidator, userAuth, UserController.login);
-
 
 export default router;
