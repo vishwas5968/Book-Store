@@ -7,11 +7,9 @@ export const registerUser = async (req, res) => {
     res.status(HttpStatus.OK).json({
       success: true,
       token: token,
-      message:
-        'Please verify yourself by using URL sent to your Email-Id'
+      message: 'Please verify yourself by using URL sent to your Email-Id'
     });
   } catch (error) {
-    console.log(error)
     res.status(HttpStatus.BAD_REQUEST).json({
       success: false,
       message: `Error: ${error}`
@@ -52,14 +50,13 @@ export const verifyUser = async (req, res) => {
 
 export const login = async (req, res, next) => {
   try {
-    const data = await UserService.login(req.body, res.locals.user);
+    const data = await UserService.login(req, res.locals.user);
     res.status(HttpStatus.OK).json({
       success: true,
       data: data,
       message: 'User successfully logged in'
     });
   } catch (error) {
-    console.log(error);
     res.status(HttpStatus.BAD_REQUEST).json({
       success: false,
       message: `Error: ${error}`

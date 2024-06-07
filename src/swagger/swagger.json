@@ -1,0 +1,375 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+      "title": "Book-Store",
+      "description": "Book Store Application where you can buy books at a discounted price"
+    },
+    "servers": [
+      {
+        "url": "http://localhost:3000/api/"
+      }
+    ],
+    "tags": [
+      {
+        "name": "Users",
+        "description": ""
+      },
+      {
+        "name": "Books",
+        "description": ""
+      }
+    ],
+    "paths": {
+      "/users": {
+        "post": {
+          "tags": [
+            "Users"
+          ],
+          "description": "Register user...",
+          "requestBody": {
+            "description": "Register user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            },
+            "required": false
+          },
+          "responses": {
+            "201": {
+              "description": "User created successfully",
+              "content": {}
+            },
+            "400": {
+              "description": "Bad Request",
+              "content": {}
+            },
+            "500": {
+              "description": "Internal server error",
+              "content": {}
+            }
+          }
+        }
+      },
+      "/users/verify": {
+        "post": {
+          "tags": [
+            "User"
+          ],
+          "description": "Verify user email...",
+          "responses": {
+            "201": {
+              "description": "User verified successfully",
+              "content": {}
+            },
+            "400": {
+              "description": "Bad Request",
+              "content": {}
+            },
+            "500": {
+              "description": "Internal server error",
+              "content": {}
+            }
+          },
+          "security": [
+            {
+              "BearerAuth": []
+            }
+          ]
+        }
+      },
+      "/users/admin": {
+        "post": {
+          "tags": [
+            "Admin"
+          ],
+          "description": "Register admin...",
+          "requestBody": {
+            "description": "Register admin",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            },
+            "required": false
+          },
+          "responses": {
+            "201": {
+              "description": "Admin created successfully",
+              "content": {}
+            },
+            "400": {
+              "description": "Bad Request",
+              "content": {}
+            },
+            "500": {
+              "description": "Internal server error",
+              "content": {}
+            }
+          }
+        }
+      },
+      "/users/login": {
+        "post": {
+          "tags": [
+            "User"
+          ],
+          "description": "User Login...",
+          "requestBody": {
+            "description": "User Login",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserLogin"
+                }
+              }
+            },
+            "required": false
+          },
+          "responses": {
+            "200": {
+              "description": "Login successful",
+              "content": {}
+            },
+            "400": {
+              "description": "Bad Request",
+              "content": {}
+            },
+            "500": {
+              "description": "Internal server error",
+              "content": {}
+            }
+          }
+        }
+      },
+      "/books/":{
+        "post": {
+          "tags":[
+            "Book"
+          ],
+          "description": "Adding Book...",
+          "requestBody": {
+            "description": "Adding Book",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Book"
+                }
+              }
+            },
+            "required": false
+          },
+          "responses": {
+            "200": {
+              "description": "Book created successfully",
+              "content": {}
+            },
+            "400": {
+              "description": "Bad Request",
+              "content": {}
+            },
+            "500": {
+              "description": "Internal server error",
+              "content": {}
+            }
+          },
+          "security":[
+            {
+              "JWT": []
+            }
+          ]
+        }
+      },
+      "/books/{_id}": {
+          "get": {
+            "tags": [
+              "Book"
+            ],
+            "summary": "Get a single book by it's id",
+            "parameters": [
+              {
+                "name": "_id",
+                "in": "path",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                }
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "book fetched successfully",
+                "content": {}
+              },
+              "400": {
+                "description": "Bad Request",
+                "content": {}
+              },
+              "500": {
+                "description": "Internal server error",
+                "content": {}
+              }
+            },
+            "security": [
+              {
+                "JWT": []
+              }
+            ]
+          },
+          "delete": {
+            "tags": [
+              "Book"
+            ],
+            "summary": "delete a single book by it's id",
+            "parameters": [
+              {
+                "name": "_id",
+                "in": "path",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                }
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "book deleted successfully",
+                "content": {}
+              },
+              "400": {
+                "description": "Bad Request",
+                "content": {}
+              },
+              "500": {
+                "description": "Internal server error",
+                "content": {}
+              }
+            },
+            "security": [
+              {
+                "JWT": []
+              }
+            ]
+          },
+          "put": {
+            "tags": [
+              "Book"
+            ],
+            "summary": "update a single book by it's id",
+            "parameters": [
+              {
+                "name": "_id",
+                "in": "path",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                }
+              }
+            ],
+            "requestBody": {
+              "description": "update book",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Book"
+                  }
+                }
+              },
+              "required": false
+            },
+            "responses": {
+              "200": {
+                "description": "book updated successfully",
+                "content": {}
+              },
+              "400": {
+                "description": "Bad Request",
+                "content": {}
+              },
+              "500": {
+                "description": "Internal server error",
+                "content": {}
+              }
+            },
+            "security": [
+              {
+                "JWT": []
+              }
+            ]
+          }
+        }
+    },
+    "components": {
+      "schemas": {
+        "User": {
+          "type": "object",
+          "properties": {
+            "fullName": {
+              "type": "string"
+            },
+            "phoneNumber": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string"
+            },
+            "password": {
+              "type": "string"
+            }
+          }
+        },
+        "UserLogin": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string"
+            },
+            "password": {
+              "type": "string"
+            }
+          }
+        },
+        "Book": {
+          "type": "object",
+          "properties": {
+            "bookName": {
+              "type": "string"
+            },
+            "author": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "price": {
+              "type": "string"
+            },
+            "discountPrice": {
+              "type": "string"
+            },
+            "quantity": {
+              "type": "string"
+            },
+            "bookImage": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "securitySchemes": {
+        "BearerAuth": {
+          "type": "http",
+          "scheme": "bearer"
+        },
+        "JWT": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+  }
+}

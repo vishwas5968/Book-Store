@@ -1,6 +1,5 @@
 import User from '../models/user.model';
 import bcrypt from 'bcrypt';
-import logger from '../config/logger.js';
 import { generateJwt } from '../utils/user.util.js';
 import { getDataInCache, setDataInCache } from '../utils/redis.js';
 import HttpStatus from 'http-status-codes';
@@ -31,9 +30,8 @@ export const verifyUser = async (email) => {
   let data = await User.create(JSON.parse(user));
 };
 
-export const login = async (body,user) => {
-  console.log(req.body.email === user.email)
-  if (body.email === user.email) {
+export const login = async (req, user) => {
+  if (req.body.email === user.email) {
     console.log(req.body.email === user.email);
   } else {
     throw {
@@ -41,13 +39,12 @@ export const login = async (body,user) => {
       message: 'Enter the correct email'
     };
   }
-  body.email = body.email.toLowerCase();
-  const users = await getUserByEmail(body.email);
-  console.log('User', users);
+  req.body.email = req.body.email.toLowerCase();
+  const users = await getUserByEmail(req.body.email);
   if (users.length === 1) {
-    const comparePassword = await bcrypt.compare(body.email, users[0].password);
-    logger.info(comparePassword, ' Compare Password');
+    const compare = await bcrypt.compare(req.body.email, users[0].password);
+    if (!compare) throw 'Passwords do not match';
   } else {
-    throw 'User with this email is already registered';
+    throw 'User with this email is not registered';
   }
 };
