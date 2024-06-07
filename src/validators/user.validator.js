@@ -11,7 +11,7 @@ export const newUserValidator = (req, res, next) => {
         new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,}$')
       )
       .message(''),
-    phone: Joi.string().required()
+    phone: Joi.number().min(6000000000).max(9999999999).required()
   });
   const { error, value } = schema.validate(req.body);
   if (error) {

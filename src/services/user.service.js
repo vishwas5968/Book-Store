@@ -1,15 +1,15 @@
 import User from '../models/user.model';
 import bcrypt from 'bcrypt';
 import logger from '../config/logger.js';
-import { generateJwt, sendEmail } from '../utils/user.util.js';
+import { generateJwt } from '../utils/user.util.js';
 import { getDataInCache, setDataInCache } from '../utils/redis.js';
+import HttpStatus from 'http-status-codes';
 
 export const getUserByEmail = async (email) => {
   return User.find({ email: email });
 };
 
 export const registerUser = async (body) => {
-  console.log('body', body);
   let user = await getUserByEmail(body.email.toLowerCase());
   if (user.length === 0) {
     body.email = body.email.toLowerCase();
@@ -17,10 +17,10 @@ export const registerUser = async (body) => {
     const jwt = await generateJwt(body.email, body.userRole);
     await setDataInCache(body.email, body);
     // await sendEmail(body.email, jwt);
-    console.log(body.email, jwt);
-    console.log(await getDataInCache(body.email));
+    return jwt;
   } else {
     throw {
+      code: HttpStatus.BAD_REQUEST,
       message: 'User with this email is already registered'
     };
   }
@@ -28,13 +28,19 @@ export const registerUser = async (body) => {
 
 export const verifyUser = async (email) => {
   const user = await getDataInCache(email);
-  console.log(user);
   let data = await User.create(JSON.parse(user));
-
-  return
 };
 
-export const login = async (body) => {
+export const login = async (body,user) => {
+  console.log(req.body.email === user.email)
+  if (body.email === user.email) {
+    console.log(req.body.email === user.email);
+  } else {
+    throw {
+      code: HttpStatus.BAD_REQUEST,
+      message: 'Enter the correct email'
+    };
+  }
   body.email = body.email.toLowerCase();
   const users = await getUserByEmail(body.email);
   console.log('User', users);
