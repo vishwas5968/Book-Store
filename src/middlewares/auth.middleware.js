@@ -9,9 +9,10 @@ export const userAuth = async (req, res, next) => {
         code: HttpStatus.BAD_REQUEST,
         message: 'Authorization token is required'
       };
-    bearerToken = bearerToken.split(' ')[1];
+    if (bearerToken.includes(' ')) bearerToken = bearerToken.split(' ')[1];
     const user = await jwt.verify(bearerToken, process.env.SECRET);
     res.locals.user = user;
+    console.log(res.locals.user);
     next();
   } catch (error) {
     next(error);

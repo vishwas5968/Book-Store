@@ -2,9 +2,9 @@ import jwt from 'jsonwebtoken';
 import { google } from 'googleapis';
 import nodemailer from 'nodemailer';
 
-export const generateJwt = async (email, userRole) => {
+export const generateJwt = async (userInfo, userRole) => {
   const payload = {
-    email,
+    userInfo,
     userRole
   };
   return 'Bearer ' + (await jwt.sign(payload, process.env.SECRET));

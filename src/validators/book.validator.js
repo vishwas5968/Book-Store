@@ -5,9 +5,9 @@ export const bookValidation = (req, res, next) => {
     bookName: Joi.string().required(),
     author: Joi.string().required(),
     description: Joi.string().required(),
-    quantity: Joi.number().required(),
-    price: Joi.number().required(),
-    discountPrice: Joi.number().required()
+    quantity: Joi.number().min(1).required(),
+    price: Joi.number().min(0).required(),
+    discountPrice: Joi.number().min(0).required()
   });
 
   const { error, value } = schema.validate(req.body);

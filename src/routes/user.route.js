@@ -15,6 +15,6 @@ router.post('/admin', newUserValidator, setAdminRole, UserController.registerUse
 
 /* User,Admin - Verification, Login */
 router.post('/verification', userAuth, UserController.verifyUser);
-router.post('/login', loginValidator, userAuth, UserController.login);
+router.post('/login', loginValidator, UserController.login);
 
 export default router;
