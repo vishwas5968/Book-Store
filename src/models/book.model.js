@@ -2,25 +2,27 @@ import { model, Schema } from 'mongoose';
 
 const bookSchema = new Schema({
   bookName: {
-    type: String
+    type: String,
+    required: true,
+    unique: true
   },
   author: {
-    type: String
+    type: String,
+    required: true
   },
   description: {
     type: String
   },
   price: {
-    type: Number
+    type: Number,
+    required: true
   },
   discountPrice: {
     type: Number
   },
   quantity: {
-    type: Number
-  },
-  admin_user_id: {
-    type: String
+    type: Number,
+    required: true
   },
   bookImage: {
     type: String

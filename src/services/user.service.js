@@ -27,23 +27,19 @@ export const registerUser = async (body) => {
 
 export const verifyUser = async (email) => {
   const user = await getDataInCache(email);
+  console.log(user);
   let data = await User.create(JSON.parse(user));
+  return await generateJwt(data._id, data.userRole);
 };
 
-export const login = async (req, user) => {
-  if (req.body.email === user.email) {
-    console.log(req.body.email === user.email);
-  } else {
-    throw {
-      code: HttpStatus.BAD_REQUEST,
-      message: 'Enter the correct email'
-    };
-  }
+export const login = async (req) => {
   req.body.email = req.body.email.toLowerCase();
   const users = await getUserByEmail(req.body.email);
+  const jwt = await generateJwt(users._id, users.userRole);
   if (users.length === 1) {
-    const compare = await bcrypt.compare(req.body.email, users[0].password);
+    const compare = await bcrypt.compare(req.body.password, users[0].password);
     if (!compare) throw 'Passwords do not match';
+    return jwt;
   } else {
     throw 'User with this email is not registered';
   }

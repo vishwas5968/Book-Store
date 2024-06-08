@@ -5,7 +5,11 @@ import 'winston-daily-rotate-file';
  * Logger handles all logs in the application
  */
 const logger = winston.createLogger({
-  format: format.combine(format.timestamp(), format.simple()),
+  format: format.combine(
+    format.timestamp(),
+    format.simple(),
+    format.colorize()
+  ),
   colorize: true,
   transports: [
     new winston.transports.File({
