@@ -1,13 +1,13 @@
 import HttpStatus from 'http-status-codes';
-import * as CartService from '../services/cart.service.js';
+import * as WishlistService from '../services/wishlist.service.js';
 
-export const getCartDetails = (req, res) => {
+export const getWishlistDetails = async (req, res) => {
   try {
-    const cart = CartService.getCartDetails(res);
+    const wishlist = await WishlistService.getWishlistDetails(res);
     res.status(HttpStatus.OK).json({
       success: true,
-      cart: cart ? cart : 'Cart is empty',
-      message: 'Successfully fetched Cart'
+      wishlist: wishlist ? wishlist : 'Wishlist is empty',
+      message: 'Successfully fetched Wishlist'
     });
   } catch (error) {
     console.log(error);
@@ -18,13 +18,13 @@ export const getCartDetails = (req, res) => {
   }
 };
 
-export const addBookToCart = async (req, res) => {
+export const addBookToWishlist = async (req, res) => {
   try {
-    const cart = await CartService.addBookToCart(req, res);
+    const wishlist = await WishlistService.addBookToWishlist(req, res);
     res.status(HttpStatus.OK).json({
       success: true,
-      cart: cart,
-      message: 'Book added to Cart'
+      wishlist: wishlist,
+      message: 'Book added to wishlist'
     });
   } catch (error) {
     console.log(error);
@@ -35,13 +35,13 @@ export const addBookToCart = async (req, res) => {
   }
 };
 
-export const removeBookFromCart = async (req, res) => {
+export const removeBookFromWishlist = async (req, res) => {
   try {
-    const cart = await CartService.removeBookFromCart(req, res);
+    const wishlist = await WishlistService.removeBookFromWishlist(req, res);
     res.status(HttpStatus.OK).json({
       success: true,
-      cart: cart,
-      message: 'Book removed from Cart'
+      wishlist: wishlist,
+      message: 'Book removed from wishlist'
     });
   } catch (error) {
     res.status(HttpStatus.BAD_REQUEST).json({
