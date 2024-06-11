@@ -1,6 +1,4 @@
 // noinspection EqualityComparisonWithCoercionJS
-
-import HttpStatus from 'http-status-codes';
 import Cart from '../models/cart.model.js';
 import BookModel from '../models/book.model.js';
 
@@ -28,8 +26,7 @@ export const addBookToCart = async (req, res) => {
       if (book._id == req.params.bookId) {
         cart[0].cartTotal += book.price;
         book.quantity += 1;
-        bookQuantity -= 1;
-        bookInfo.quantity = bookQuantity;
+        bookInfo.quantity = bookQuantity - 1;
         await BookModel.findByIdAndUpdate(bookInfo);
         updatedCart = await Cart.findByIdAndUpdate(cart[0]._id, cart[0], {
           new: true
@@ -37,9 +34,9 @@ export const addBookToCart = async (req, res) => {
       }
     }
     if (updatedCart === undefined) {
-      cart[0].books.push(book);
-      cart[0].cartTotal += book.price;
-      book.quantity += 1;
+      cart[0].books.push(bookInfo);
+      cart[0].cartTotal += bookInfo.price;
+      bookInfo.quantity += 1;
       updatedCart = await Cart.findByIdAndUpdate(cart[0]._id, cart[0], {
         new: true
       });
@@ -54,7 +51,7 @@ export const removeBookFromCart = async (req, res) => {
   if (book.quantity === 0) throw 'Book with this Id is not present in stock';
   book.quantity = 1;
   let updatedCart;
-  if (cart === null) {
+  if (cart == null) {
     throw 'Cart is Empty';
   } else {
     for (let book of cart[0].books) {

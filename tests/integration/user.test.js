@@ -1,36 +1,35 @@
 import request from 'supertest';
-import mongoose from 'mongoose';
 import app from '../../src/index';
-const Redis = require('ioredis');
-const redisClient = new Redis();
+import mongoose from 'mongoose';
+
 let token;
-let productId;
+let bookId;
+// let userId;
 describe('User APIs Test', () => {
-  // before((done) => {
+  // before(() => {
   //   const clearCollections = () => {
   //     for (const collection in mongoose.connection.collections) {
   //       mongoose.connection.collections[collection].deleteOne(() => {});
   //     }
   //   };
-
+  //
   //   const mongooseConnect = async () => {
   //     await mongoose.connect(process.env.DATABASE_TEST);
   //     clearCollections();
   //   };
-
+  //
   //   if (mongoose.connection.readyState === 0) {
   //     mongooseConnect();
   //   } else {
   //     clearCollections();
   //   }
-  //   done();
   // });
 
   describe('POST http://localhost:3000/api/bookstore_user/', () => {
     it('should send an email to verify user', async () => {
       const res = await request(app).post('/api/bookstore_user/').send({
         name: 'Vishwas Ramesh',
-        email: 'vishwasrr9628111@gmail.com',
+        email: 'vishwasrr968@gmail.com',
         password: 'Vishwas@123',
         phone: 9999999999
       });
@@ -44,6 +43,8 @@ describe('User APIs Test', () => {
       const res = await request(app)
         .post('/api/bookstore_user/verification')
         .set('Authorization', token);
+      console.log('res.body', res.body);
+      token = res.body.token;
       expect(res.status).toBe(200);
     });
   });
@@ -54,9 +55,12 @@ describe('User APIs Test', () => {
         .post('/api/bookstore_user/login')
         .set('Authorization', token)
         .send({
-          email: 'vishwasrr9628111@gmail.com',
+          email: 'vishwasrr968@gmail.com',
           password: 'Vishwas@123'
         });
+      token = res.body.token.jwt;
+      // userId = res.body.token.id;
+      console.log('res.body', res.body);
       expect(res.status).toBe(200);
     });
   });
@@ -74,11 +78,10 @@ describe('User APIs Test', () => {
           discountPrice: 450,
           bookName: 'Sherlock: Chronicles',
           author: 'Steve Tribe',
-          quantity: -5,
+          quantity: 5,
           price: 800
         });
-      console.log(res.body);
-      productId = res.body.data._id;
+      bookId = res.body.data._id;
       expect(res.status).toBe(200);
     });
   });
@@ -92,19 +95,19 @@ describe('User APIs Test', () => {
     });
   });
 
-  describe('GET http://localhost:3000/api/bookstore_user/book/:productId', () => {
+  describe('GET http://localhost:3000/api/bookstore_user/book/:bookId', () => {
     it('Fetch book based on Id', async () => {
       const res = await request(app)
-        .get(`/api/bookstore_user/book/${productId}`)
+        .get(`/api/bookstore_user/book/${bookId}`)
         .set('Authorization', token);
       expect(res.status).toBe(200);
     });
   });
 
-  describe('PUT http://localhost:3000/api/bookstore_user/book/admin/:productId', () => {
+  describe('PUT http://localhost:3000/api/bookstore_user/book/admin/:bookId', () => {
     it('Update book based on Id', async () => {
       const res = await request(app)
-        .put(`/api/bookstore_user/book/admin/${productId}`)
+        .put(`/api/bookstore_user/book/admin/${bookId}`)
         .set('Authorization', token)
         .send({
           description:
@@ -112,17 +115,44 @@ describe('User APIs Test', () => {
           discountPrice: 450,
           bookName: 'Sherlock: Chronicles',
           author: 'Steve Tribe',
-          quantity: -5,
+          quantity: 15,
           price: 800
         });
       expect(res.status).toBe(200);
     });
   });
 
-  describe('DELETE http://localhost:3000/api/bookstore_user/book/admin/:productId', () => {
+  describe('DELETE http://localhost:3000/api/bookstore_user/book/admin/:bookId', () => {
     it('Delete book based on Id', async () => {
       const res = await request(app)
-        .delete(`/api/bookstore_user/book/admin/${productId}`)
+        .delete(`/api/bookstore_user/book/admin/${bookId}`)
+        .set('Authorization', token);
+      expect(res.status).toBe(200);
+    });
+  });
+
+  describe('GET http://localhost:3000/api/bookstore_user/cart/', () => {
+    it('Get Cart based on User Id', async () => {
+      const res = await request(app)
+        .get(`/api/bookstore_user/cart`)
+        .set('Authorization', token);
+      expect(res.status).toBe(200);
+    });
+  });
+
+  describe('POST http://localhost:3000/api/bookstore_user/cart/add/${bookId}', () => {
+    it('Add Book to Cart based on Book Id', async () => {
+      const res = await request(app)
+        .post(`/api/bookstore_user/cart/add/${bookId}`)
+        .set('Authorization', token);
+      expect(res.status).toBe(200);
+    });
+  });
+
+  describe('POST http://localhost:3000/api/bookstore_user/cart/remove/${bookId}', () => {
+    it('Remove Book to Cart based on Book Id', async () => {
+      const res = await request(app)
+        .post(`/api/bookstore_user/cart/remove/${bookId}`)
         .set('Authorization', token);
       expect(res.status).toBe(200);
     });

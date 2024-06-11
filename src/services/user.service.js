@@ -39,8 +39,7 @@ export const login = async (req) => {
   if (users.length === 1) {
     const compare = await bcrypt.compare(req.body.password, users[0].password);
     if (!compare) throw 'Passwords do not match';
-    return jwt;
-  } else {
-    throw 'User with this email is not registered';
+    return { jwt, id: users[0]._id };
   }
+  throw 'User with this email is not registered';
 };
