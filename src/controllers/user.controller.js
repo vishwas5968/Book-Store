@@ -10,6 +10,7 @@ export const registerUser = async (req, res) => {
       message: 'Please verify yourself by using URL sent to your Email-Id'
     });
   } catch (error) {
+    console.log(error);
     res.status(HttpStatus.BAD_REQUEST).json({
       success: false,
       message: `Error: ${error}`
@@ -26,6 +27,7 @@ export const verifyUser = async (req, res) => {
       message: 'User created successfully'
     });
   } catch (error) {
+    console.log(error);
     res.status(HttpStatus.BAD_REQUEST).json({
       success: false,
       message: `Error: ${error}`
