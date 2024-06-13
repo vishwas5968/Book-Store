@@ -4,7 +4,6 @@ const customerDetailsSchema = new Schema({
   customerId: {
     type: Schema.Types.ObjectId,
     ref: 'User',
-    required: true
   },
   fullName: {
     type: String,
@@ -16,6 +15,7 @@ const customerDetailsSchema = new Schema({
   },
   address: [
     {
+      _id:false,
       type: {
         type: String,
         enum: ['home', 'office', 'other'],

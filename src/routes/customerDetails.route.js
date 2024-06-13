@@ -8,3 +8,5 @@ export const router = express.Router();
 router.post('/', userAuth, CustomerDetailsController.addCustomerDetails);
 
 router.get('/', userAuth, CustomerDetailsController.getCustomerDetails);
+
+export default router;

@@ -1,33 +1,39 @@
 import request from 'supertest';
 import app from '../../src/index';
 import mongoose from 'mongoose';
+import expect from 'expect';
 
 let token;
 let bookId;
 // let userId;
 describe('User APIs Test', () => {
-  // before(() => {
-  //   const clearCollections = () => {
-  //     for (const collection in mongoose.connection.collections) {
-  //       mongoose.connection.collections[collection].deleteOne(() => {});
-  //     }
-  //   };
-  //
-  //   const mongooseConnect = async () => {
-  //     await mongoose.connect(process.env.DATABASE_TEST);
-  //     clearCollections();
-  //   };
-  //
-  //   if (mongoose.connection.readyState === 0) {
-  //     mongooseConnect();
-  //   } else {
-  //     clearCollections();
-  //   }
-  // });
+  beforeAll((done) => {
+    const clearCollections = () => {
+      for (const collection in mongoose.connection.collections) {
+        mongoose.connection.collections[collection].deleteOne(() => {});
+      }
+    };
 
-  describe('POST http://localhost:3000/api/bookstore_user/', () => {
+    const mongooseConnect = async () => {
+      await mongoose.connect(process.env.DATABASE_TEST);
+      clearCollections();
+    };
+
+    if (mongoose.connection.readyState === 0) {
+      mongooseConnect();
+    } else {
+      clearCollections();
+    }
+    done();
+  });
+
+  afterAll(async () => {
+    await mongoose.connection.close();
+  });
+
+  describe('POST http://localhost:3000/api/bookstore/users', () => {
     it('should send an email to verify user', async () => {
-      const res = await request(app).post('/api/bookstore_user/').send({
+      const res = await request(app).post('/api/bookstore/users').send({
         name: 'Vishwas Ramesh',
         email: 'vishwasrr968@gmail.com',
         password: 'Vishwas@123',
@@ -38,10 +44,10 @@ describe('User APIs Test', () => {
     });
   });
 
-  describe('POST http://localhost:3000/api/bookstore_user/verification', () => {
+  describe('POST http://localhost:3000/api/bookstore/users/verification', () => {
     it('Verifying user', async () => {
       const res = await request(app)
-        .post('/api/bookstore_user/verification')
+        .post('/api/bookstore/users/verification')
         .set('Authorization', token);
       console.log('res.body', res.body);
       token = res.body.token;
@@ -49,28 +55,26 @@ describe('User APIs Test', () => {
     });
   });
 
-  describe('POST http://localhost:3000/api/bookstore_user/login', () => {
+  describe('POST http://localhost:3000/api/bookstore/users/login', () => {
     it('Logging in the user', async () => {
       const res = await request(app)
-        .post('/api/bookstore_user/login')
+        .post('/api/bookstore/users/login')
         .set('Authorization', token)
         .send({
           email: 'vishwasrr968@gmail.com',
           password: 'Vishwas@123'
         });
       token = res.body.token.jwt;
-      // userId = res.body.token.id;
       console.log('res.body', res.body);
       expect(res.status).toBe(200);
+      console.log(token);
     });
   });
 
-  console.log(token);
-
-  describe('POST http://localhost:3000/api/bookstore_user/book/admin', () => {
-    it('Add new book', async () => {
+  describe('POST http://localhost:3000/api/bookstore/books/admin', () => {
+    it('Add new books', async () => {
       const res = await request(app)
-        .post('/api/bookstore_user/book/admin')
+        .post('/api/bookstore/books/admin')
         .set('Authorization', token)
         .send({
           description:
@@ -86,32 +90,31 @@ describe('User APIs Test', () => {
     });
   });
 
-  describe('GET http://localhost:3000/api/bookstore_user/book/', () => {
+  describe('GET http://localhost:3000/api/bookstore/books/', () => {
     it('Fetch all books', async () => {
       const res = await request(app)
-        .get(`/api/bookstore_user/book`)
+        .get(`/api/bookstore/books`)
         .set('Authorization', token);
       expect(res.status).toBe(200);
     });
   });
 
-  describe('GET http://localhost:3000/api/bookstore_user/book/:bookId', () => {
-    it('Fetch book based on Id', async () => {
+  describe('GET http://localhost:3000/api/bookstore/books/:bookId', () => {
+    it('Fetch books based on Id', async () => {
       const res = await request(app)
-        .get(`/api/bookstore_user/book/${bookId}`)
+        .get(`/api/bookstore/books/${bookId}`)
         .set('Authorization', token);
       expect(res.status).toBe(200);
     });
   });
 
-  describe('PUT http://localhost:3000/api/bookstore_user/book/admin/:bookId', () => {
-    it('Update book based on Id', async () => {
+  describe('PUT http://localhost:3000/api/bookstore/books/admin/:bookId', () => {
+    it('Update books based on Id', async () => {
       const res = await request(app)
-        .put(`/api/bookstore_user/book/admin/${bookId}`)
+        .put(`/api/bookstore/books/admin/${bookId}`)
         .set('Authorization', token)
         .send({
-          description:
-            'A visually stunning and comprehensive guide to the hit BBC series, Sherlock: Chronicles tells the full story of the show as you’ve never seen it before. Packed with exclusive unseen material, including all-new interviews with the cast and crew, this is Sherlock from the ground up: from story and script development to casting, sets, costumes, props, music and more. Each episode of the spectacular three series is remembered by those who made it, from the show’s dazzling debut in A Study in Pink to this year’s breathtaking finale, His Last Vow.Featuring over 500 images of concept artwork, photographs, costume and set designs, and more, Chronicles is the ultimate celebration for Sherlock fans everywhere.',
+          description: 'Hit BBC series, Sherlock: Chronicles.',
           discountPrice: 450,
           bookName: 'Sherlock: Chronicles',
           author: 'Steve Tribe',
@@ -122,38 +125,106 @@ describe('User APIs Test', () => {
     });
   });
 
-  describe('DELETE http://localhost:3000/api/bookstore_user/book/admin/:bookId', () => {
-    it('Delete book based on Id', async () => {
+  describe('DELETE http://localhost:3000/api/bookstore/books/admin/:bookId', () => {
+    it('Delete books based on Id', async () => {
       const res = await request(app)
-        .delete(`/api/bookstore_user/book/admin/${bookId}`)
+        .delete(`/api/bookstore/books/admin/${bookId}`)
         .set('Authorization', token);
       expect(res.status).toBe(200);
     });
   });
 
-  describe('GET http://localhost:3000/api/bookstore_user/cart/', () => {
+  describe('GET http://localhost:3000/api/bookstore/cart/', () => {
     it('Get Cart based on User Id', async () => {
       const res = await request(app)
-        .get(`/api/bookstore_user/cart`)
+        .get(`/api/bookstore/carts`)
         .set('Authorization', token);
       expect(res.status).toBe(200);
     });
   });
 
-  describe('POST http://localhost:3000/api/bookstore_user/cart/add/${bookId}', () => {
-    it('Add Book to Cart based on Book Id', async () => {
+  describe('POST http://localhost:3000/api/bookstore/cart/add/${bookId}', () => {
+    it('Add books to Cart based on books Id', async () => {
       const res = await request(app)
-        .post(`/api/bookstore_user/cart/add/${bookId}`)
+        .post(`/api/bookstore/carts/add/${bookId}`)
         .set('Authorization', token);
       expect(res.status).toBe(200);
     });
   });
 
-  describe('POST http://localhost:3000/api/bookstore_user/cart/remove/${bookId}', () => {
-    it('Remove Book to Cart based on Book Id', async () => {
+  describe('POST http://localhost:3000/api/bookstore/cart/remove/${bookId}', () => {
+    it('Remove books from Cart based on books Id', async () => {
       const res = await request(app)
-        .post(`/api/bookstore_user/cart/remove/${bookId}`)
+        .post(`/api/bookstore/carts/remove/${bookId}`)
         .set('Authorization', token);
+      expect(res.status).toBe(200);
+    });
+  });
+
+  describe('GET http://localhost:3000/api/bookstore/wishlist/', () => {
+    it('Get Wishlist based on User Id', async () => {
+      const res = await request(app)
+        .get(`/api/bookstore/wishlists`)
+        .set('Authorization', token);
+      expect(res.status).toBe(200);
+    });
+  });
+
+  describe('POST http://localhost:3000/api/bookstore/wishlist/${bookId}', () => {
+    it('Add books to Wishlist based on books Id', async () => {
+      const res = await request(app)
+        .post(`/api/bookstore/wishlists/add/${bookId}`)
+        .set('Authorization', token);
+      expect(res.status).toBe(200);
+    });
+  });
+
+  describe('POST http://localhost:3000/api/bookstore/wishlist/remove/${bookId}', () => {
+    it('Remove books from Wishlist based on books Id', async () => {
+      const res = await request(app)
+        .post(`/api/bookstore/wishlists/remove/${bookId}`)
+        .set('Authorization', token);
+      expect(res.status).toBe(200);
+    });
+  });
+
+  describe('GET http://localhost:3000/api/bookstore/order/', () => {
+    it('Get Order based on User Id', async () => {
+      const res = await request(app)
+        .get(`/api/bookstore/orders`)
+        .set('Authorization', token);
+      expect(res.status).toBe(200);
+    });
+  });
+
+  describe('GET http://localhost:3000/api/bookstore/customer-details/', () => {
+    it('Get Customer-details based on User Id', async () => {
+      const res = await request(app)
+        .get(`/api/bookstore/customer-details`)
+        .set('Authorization', token);
+      expect(res.status).toBe(400);
+    });
+  });
+
+  describe('POST http://localhost:3000/api/bookstore/customer-details/', () => {
+    it('Add customer-details of User', async () => {
+      const res = await request(app)
+        .post(`/api/bookstore/customer-details`)
+        .set('Authorization', token)
+        .send({
+          fullName: 'Vishwas',
+          mobileNumber: '23456789056',
+          address: [
+            {
+              type: 'home',
+              addressLine: 'Default Home Address Line',
+              city: 'Default City',
+              state: 'Default State',
+              postalCode: '000000',
+              country: 'Default Country'
+            }
+          ]
+        });
       expect(res.status).toBe(200);
     });
   });

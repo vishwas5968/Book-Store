@@ -1,9 +1,9 @@
-import * as UserService from '../services/user.service.js';
+import * as OrderService from '../services/order.service.js';
 import HttpStatus from 'http-status-codes';
 
 export const getOrderDetails = async (req, res) => {
   try {
-    const order = await OrderService.getOrderDetails(req);
+    const order = await OrderService.getOrderDetails(res);
     res.status(HttpStatus.OK).json({
       success: true,
       order: order,

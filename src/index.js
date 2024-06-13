@@ -28,7 +28,7 @@ app.use(morgan('combined', { stream: logStream }));
 
 database();
 
-app.use(`/api/`, routes());
+app.use(`/api/bookstore`, routes());
 app.use(appErrorHandler);
 app.use(genericErrorHandler);
 app.use(notFound);

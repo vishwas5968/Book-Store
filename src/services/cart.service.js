@@ -25,9 +25,10 @@ export const addBookToCart = async (req, res) => {
     for (let book of cart[0].books) {
       if (book._id == req.params.bookId) {
         cart[0].cartTotal += book.price;
-        book.quantity += 1;
-        bookInfo.quantity = bookQuantity - 1;
-        await BookModel.findByIdAndUpdate(bookInfo);
+        if (book.quantity === bookQuantity) {
+          throw "Book out of stock"
+        }
+      book.quantity += 1;
         updatedCart = await Cart.findByIdAndUpdate(cart[0]._id, cart[0], {
           new: true
         });
