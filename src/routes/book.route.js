@@ -7,11 +7,11 @@ const router = express.Router();
 
 /* User, Admin - Product */
 router.get('/', userAuth, BookController.getAllBooks);
-router.get('/:productId', userAuth, BookController.getBookById);
+router.get('/:bookId', userAuth, BookController.getBookById);
 
 /* Admin - Product */
-router.post('/admin', userAuth, bookValidation, BookController.addBook);
-router.put('/admin/:productId', userAuth, BookController.updateBookDetailsById);
-router.delete('/admin/:productId', userAuth, BookController.deleteBookById);
+router.post('/', userAuth, bookValidation, BookController.addBook);
+router.put('/:bookId', userAuth, BookController.updateBookDetailsById);
+router.delete('/:bookId', userAuth, BookController.deleteBookById);
 
 export default router;

@@ -1,9 +1,9 @@
 import HttpStatus from 'http-status-codes';
 import * as CartService from '../services/cart.service.js';
 
-export const getCartDetails = (req, res) => {
+export const getCartDetails = async (req, res) => {
   try {
-    const cart = CartService.getCartDetails(res);
+    const cart = await CartService.getCartDetails(res);
     res.status(HttpStatus.OK).json({
       success: true,
       cart: cart ? cart : 'Cart is empty',

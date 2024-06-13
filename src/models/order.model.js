@@ -2,7 +2,7 @@ import { Schema, model } from 'mongoose';
 
 const orderSchema = new Schema({
   orderBy: {
-    type: String
+    type: Schema.Types.ObjectId
   },
   books: [
     {
@@ -34,6 +34,9 @@ const orderSchema = new Schema({
       }
     }
   ],
+  orderTotal:{
+    type: Number
+  },
   isPurchased: {
     type: Boolean,
     default: false

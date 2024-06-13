@@ -1,5 +1,4 @@
-import * as CustomerDetailsService from './customerDetails.controller.js';
-import * as WishlistService from '../services/wishlist.service.js';
+import * as CustomerDetailsService from '../services/customerDetails.service.js';
 import HttpStatus from 'http-status-codes';
 
 export const addCustomerDetails = async (req, res) => {

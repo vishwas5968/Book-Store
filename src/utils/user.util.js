@@ -39,8 +39,7 @@ export async function sendEmail(email, jwt) {
     subject: 'User Verification',
     text: `Please click on the link below within 5 minutes to complete your verification http://localhost:3000/api/bookstore_user/verification/${jwt}`
   };
-  transporter.sendMail(msg, (err, result) => {
-    console.log(result);
+  transporter.sendMail(msg, (err) => {
     if (err) throw new Error(err);
   });
 }
